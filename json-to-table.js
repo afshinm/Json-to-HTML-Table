@@ -1,8 +1,30 @@
-/*
-** Convert Json Data to HTML Table 
-** @author Afshin Mehrabani <afshin dot meh at gmail dot com>
-*/ 
+/**
+ * JavaScript format string function
+ * 
+ */
 
+String.prototype.format = function() {
+  var args = arguments;
+  return this.replace(/{(\d+)}/g, function(match, number) {
+    return typeof args[number] != 'undefined'
+      ? args[number]
+      : '{' + number + '}'
+    ;
+  });
+};
+
+/**
+ * Convert json to html table
+ * 
+ * @author Afshin Mehrabani <afshin dot meh at gmail dot com>
+ * 
+ * @param jsonData string Json data
+ * @param keys array Keys for table header
+ * @param containerId string Table id 
+ * @param tableClassName string Table css class name
+ * 
+ * @return string Converted json to html table
+ */
 function ConvertJsonToTable(jsonData, keys, containerId, tableClassName) {
     //Patterns for table thead & tbody
     var tbl = "<table border='1' cellpadding='1' cellspacing='1' id='" + containerId + "' class='" + tableClassName + "'>{0}{1}</table>";
