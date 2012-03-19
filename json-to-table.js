@@ -19,13 +19,14 @@ String.prototype.format = function()
  * 
  * @author Afshin Mehrabani <afshin dot meh at gmail dot com>
  * 
- * @param parsedJson object Json parsed data
+ * @param parsedJson string Json data
+ * @param headers array Keys for table header
  * @param containerId string Table id 
  * @param tableClassName string Table css class name
  * 
  * @return string Converted json to html table
  */
-function ConvertJsonToTable(parsedJson, containerId, tableClassName)
+function convertParsedJsonToTable(parsedJson, containerId, tableClassName)
 {
     //Patterns for table thead & tbody
     var tbl = '<table border="1" cellpadding="1" cellspacing="1" id="' + containerId + '" class="' + tableClassName + '">{0}{1}</table>';
@@ -47,16 +48,15 @@ function ConvertJsonToTable(parsedJson, containerId, tableClassName)
 
         // Create table headers from Json data
         if(isStringArray) // If data is a simple string array we create a single table header
-        {
             thCon += thRow.format('value');
-        }
         else
         {
-            headers = array_keys(parsedJson[0]);    // headers are automatically calcuted 
-
-            for (i = 0; i < headers.length; i++)
+            if(typeof(parsedJson[0]) == 'object')
             {
-                thCon += thRow.format(headers[i]);
+                headers = array_keys(parsedJson[0]);    // headers are automatically calcuted 
+
+                for (i = 0; i < headers.length; i++)
+                    thCon += thRow.format(headers[i]);
             }
         }
         th = th.format(tr.format(thCon));
@@ -73,27 +73,30 @@ function ConvertJsonToTable(parsedJson, containerId, tableClassName)
         }
         else
         {
-            var regExp = new RegExp(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig);
-
-            for (i = 0; i < parsedJson.length; i++)
+            if(headers)
             {
-                for (j = 0; j < headers.length; j++)
-                {
-                    var value = parsedJson[i][headers[j]];
-                    var isUrl = regExp.test(value);
+                var regExp = new RegExp(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig);
 
-                    if(isUrl)   // If value is URL we auto-create a link
-                        tbCon += tdRow.format(link.format(value));
-                    else
+                for (i = 0; i < parsedJson.length; i++)
+                {
+                    for (j = 0; j < headers.length; j++)
                     {
-                        if(value)
-                            tbCon += tdRow.format(value);
-                        else    // If value == null we format it like PhpMyAdmin NULL values
-                            tbCon += tdRow.format(italic.format(value).toUpperCase());
+                        var value = parsedJson[i][headers[j]];
+                        var isUrl = regExp.test(value);
+
+                        if(isUrl)   // If value is URL we auto-create a link
+                            tbCon += tdRow.format(link.format(value));
+                        else
+                        {
+                            if(value)
+                                tbCon += tdRow.format(value);
+                            else    // If value == null we format it like PhpMyAdmin NULL values
+                                tbCon += tdRow.format(italic.format(value).toUpperCase());
+                        }
                     }
+                    trCon += tr.format(tbCon);
+                    tbCon = '';
                 }
-                trCon += tr.format(tbCon);
-                tbCon = '';
             }
         }
         tb = tb.format(trCon);
