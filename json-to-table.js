@@ -19,22 +19,22 @@ String.prototype.format = function()
  * 
  * @author Afshin Mehrabani <afshin dot meh at gmail dot com>
  * 
- * @param parsedJson string Json data
- * @param headers array Keys for table header
+ * @param parsedJson object parsed JSON data
  * @param containerId string Table id 
  * @param tableClassName string Table css class name
  * 
  * @return string Converted json to html table
  */
-function convertParsedJsonToTable(parsedJson, containerId, tableClassName)
+function ConvertJsonToTable(parsedJson, containerId, tableClassName)
 {
+    //Patterns for links and NULL value
+    var link = '<a href="{0}">{0}</a>';
+    var italic = '<i>{0}</i>';
     //Patterns for table thead & tbody
     var tbl = '<table border="1" cellpadding="1" cellspacing="1" id="' + containerId + '" class="' + tableClassName + '">{0}{1}</table>';
     var th = '<thead>{0}</thead>';
     var tb = '<tbody>{0}</tbody>';
     var tr = '<tr>{0}</tr>';
-    var link = '<a href="{0}">{0}</a>';
-    var italic = '<i>{0}</i>';
     var thRow = '<th>{0}</th>';
     var tdRow = '<td>{0}</td>';
     var thCon = '';
@@ -53,7 +53,7 @@ function convertParsedJsonToTable(parsedJson, containerId, tableClassName)
         {
             if(typeof(parsedJson[0]) == 'object')
             {
-                headers = array_keys(parsedJson[0]);    // headers are automatically calcuted 
+                headers = array_keys(parsedJson[0]);    // headers are automatically computed
 
                 for (i = 0; i < headers.length; i++)
                     thCon += thRow.format(headers[i]);
