@@ -15,27 +15,53 @@ String.prototype.format = function()
 
 
 /**
- * Convert json to html table
- * 
+ * Convert a Javascript Oject array or String array to an HTML table
+ * JSON parsing has to be made before function call
+ * It allows use of other JSON parsing methods like jQuery.parseJSON
+ *
+ * JSON data samples that should be parsed and then can be converted to an HTML table
+ *     var objectArray = '[{"Total":"34","Version":"1.0.4","Office":"New York"},{"Total":"67","Version":"1.1.0","Office":"Paris"}]';
+ *     var stringArray = '["New York","Berlin","Paris","Marrakech","Moscow"]';
+ *
+ * Code sample to create a HTML table Javascript String
+ *     var jsonHtmlTable = ConvertJsonToTable(eval(dataString), 'jsonTable', null, 'Download');
+ *
+ * Code sample explaned
+ *  - eval is used to parse a JSON dataString
+ *  - table HTML id attribute will be 'jsonTable'
+ *  - table HTML class attribute will not be added
+ *  - 'Download' text will be displayed instead of the link itself
+ *
  * @author Afshin Mehrabani <afshin dot meh at gmail dot com>
  * 
- * @param parsedJson object parsed JSON data
- * @param containerId string Table id 
- * @param tableClassName string Table css class name
+ * @param parsedJson object Parsed JSON data
+ * @param tableId string Optional table id 
+ * @param tableClassName string Optional table css class name
+ * @param linkText string Optional text replacement for link pattern
  * 
- * @return string Converted json to html table
+ * @return string Converted JSON to HTML table
  */
-function ConvertJsonToTable(parsedJson, containerId, tableClassName)
+function ConvertJsonToTable(parsedJson, tableId, tableClassName, linkText)
 {
     //Patterns for links and NULL value
-    var link = '<a href="{0}">{0}</a>';
     var italic = '<i>{0}</i>';
-    //Patterns for table thead & tbody
-    var tbl = '<table border="1" cellpadding="1" cellspacing="1" id="' + containerId + '" class="' + tableClassName + '">{0}{1}</table>';
+    var link = linkText ? '<a href="{0}">' + linkText + '</a>' :
+                          '<a href="{0}">{0}</a>';
+
+    //Pattern for table                          
+    var idMarkup = tableId ? ' id="' + tableId + '"' :
+                             '';
+
+    var classMarkup = tableClassName ? ' class="' + tableClassName + '"' :
+                                       '';
+
+    var tbl = '<table border="1" cellpadding="1" cellspacing="1"' + idMarkup + classMarkup + '>{0}{1}</table>';
+
+    //Patterns for table content
     var th = '<thead>{0}</thead>';
     var tb = '<tbody>{0}</tbody>';
     var tr = '<tr>{0}</tr>';
-    var thRow = '<th>{0}</th>';
+    var thRow = '<th class="header">{0}</th>';
     var tdRow = '<td>{0}</td>';
     var thCon = '';
     var tbCon = '';
@@ -46,14 +72,16 @@ function ConvertJsonToTable(parsedJson, containerId, tableClassName)
         var isStringArray = typeof(parsedJson[0]) == 'string';
         var headers;
 
-        // Create table headers from Json data
-        if(isStringArray) // If data is a simple string array we create a single table header
+        // Create table headers from JSON data
+        // If JSON data is a simple string array we create a single table header
+        if(isStringArray)
             thCon += thRow.format('value');
         else
         {
+            // If JSON data is an object array, headers are automatically computed
             if(typeof(parsedJson[0]) == 'object')
             {
-                headers = array_keys(parsedJson[0]);    // headers are automatically computed
+                headers = array_keys(parsedJson[0]);
 
                 for (i = 0; i < headers.length; i++)
                     thCon += thRow.format(headers[i]);
@@ -100,13 +128,13 @@ function ConvertJsonToTable(parsedJson, containerId, tableClassName)
             }
         }
         tb = tb.format(trCon);
-
         tbl = tbl.format(th, tb);
+
         return tbl;
     }
-
     return null;
 }
+
 
 /**
  * Return just the keys from the input array, optionally only for the specified search_value
