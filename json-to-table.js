@@ -18,6 +18,7 @@ String.prototype.format = function()
  * Convert a Javascript Oject array or String array to an HTML table
  * JSON parsing has to be made before function call
  * It allows use of other JSON parsing methods like jQuery.parseJSON
+ * http(s)://, ftp://, file:// and javascript:; links are automatically computed
  *
  * JSON data samples that should be parsed and then can be converted to an HTML table
  *     var objectArray = '[{"Total":"34","Version":"1.0.4","Office":"New York"},{"Total":"67","Version":"1.1.0","Office":"Paris"}]';
@@ -61,7 +62,7 @@ function ConvertJsonToTable(parsedJson, tableId, tableClassName, linkText)
     var th = '<thead>{0}</thead>';
     var tb = '<tbody>{0}</tbody>';
     var tr = '<tr>{0}</tr>';
-    var thRow = '<th class="header">{0}</th>';
+    var thRow = '<th>{0}</th>';
     var tdRow = '<td>{0}</td>';
     var thCon = '';
     var tbCon = '';
@@ -103,14 +104,15 @@ function ConvertJsonToTable(parsedJson, tableId, tableClassName, linkText)
         {
             if(headers)
             {
-                var regExp = new RegExp(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig);
-
+                var urlRegExp = new RegExp(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig);
+                var javascriptRegExp = new RegExp(/(^javascript:[\s\S]*;$)/ig);
+                
                 for (i = 0; i < parsedJson.length; i++)
                 {
                     for (j = 0; j < headers.length; j++)
                     {
                         var value = parsedJson[i][headers[j]];
-                        var isUrl = regExp.test(value);
+                        var isUrl = urlRegExp.test(value) || javascriptRegExp.test(value);
 
                         if(isUrl)   // If value is URL we auto-create a link
                             tbCon += tdRow.format(link.format(value));
