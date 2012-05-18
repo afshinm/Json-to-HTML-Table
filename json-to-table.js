@@ -118,10 +118,17 @@ function ConvertJsonToTable(parsedJson, tableId, tableClassName, linkText)
                             tbCon += tdRow.format(link.format(value));
                         else
                         {
-                            if(value)
-                                tbCon += tdRow.format(value);
-                            else    // If value == null we format it like PhpMyAdmin NULL values
+                            if(value){
+                            	if(typeof(value) == 'object'){
+                            		//for supporting nested tables
+                            		tbCon += tdRow.format(ConvertJsonToTable(eval(value.data), value.tableId, value.tableClassName, value.linkText));
+                            	} else {
+                            		tbCon += tdRow.format(value);
+                            	}
+                                
+                            } else {    // If value == null we format it like PhpMyAdmin NULL values
                                 tbCon += tdRow.format(italic.format(value).toUpperCase());
+                            }
                         }
                     }
                     trCon += tr.format(tbCon);
