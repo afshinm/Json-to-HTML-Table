@@ -23,6 +23,7 @@ String.prototype.format = function()
  * JSON data samples that should be parsed and then can be converted to an HTML table
  *     var objectArray = '[{"Total":"34","Version":"1.0.4","Office":"New York"},{"Total":"67","Version":"1.1.0","Office":"Paris"}]';
  *     var stringArray = '["New York","Berlin","Paris","Marrakech","Moscow"]';
+ *     var nestedTable = '[{ key1: "val1", key2: "val2", key3: { tableId: "tblIdNested1", tableClassName: "clsNested", linkText: "Download", data: [{ subkey1: "subval1", subkey2: "subval2", subkey3: "subval3" }] } }]'; 
  *
  * Code sample to create a HTML table Javascript String
  *     var jsonHtmlTable = ConvertJsonToTable(eval(dataString), 'jsonTable', null, 'Download');
