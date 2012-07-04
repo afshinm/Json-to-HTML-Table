@@ -19,11 +19,14 @@ String.prototype.format = function()
  * JSON parsing has to be made before function call
  * It allows use of other JSON parsing methods like jQuery.parseJSON
  * http(s)://, ftp://, file:// and javascript:; links are automatically computed
+ * Allows custom styling of cells
  *
  * JSON data samples that should be parsed and then can be converted to an HTML table
  *     var objectArray = '[{"Total":"34","Version":"1.0.4","Office":"New York"},{"Total":"67","Version":"1.1.0","Office":"Paris"}]';
  *     var stringArray = '["New York","Berlin","Paris","Marrakech","Moscow"]';
  *     var nestedTable = '[{ key1: "val1", key2: "val2", key3: { tableId: "tblIdNested1", tableClassName: "clsNested", linkText: "Download", data: [{ subkey1: "subval1", subkey2: "subval2", subkey3: "subval3" }] } }]'; 
+ * JSON data sample: pass custom cell properties along with cell data
+ *	var objectArray = '[{"Total":{"dataType":"rawData","data":"34","properties":{"background":"yellow"}},"Version":"1.0.4","Office":"New York"},{"Total":"67","Version":"1.1.0","Office":"Paris"}]';
  *
  * Code sample to create a HTML table Javascript String
  *     var jsonHtmlTable = ConvertJsonToTable(eval(dataString), 'jsonTable', null, 'Download');
@@ -33,6 +36,12 @@ String.prototype.format = function()
  *  - table HTML id attribute will be 'jsonTable'
  *  - table HTML class attribute will not be added
  *  - 'Download' text will be displayed instead of the link itself
+ * Custom cell properties sample explained
+ *  - same keys above apply
+ *  - To pass custom style, make the value an object with the following keys:
+ *    > dataType: either 'rawData' or 'subTable'
+ *    > data: any data values you want contained in the cell
+ *    > properties: an object with any CSS style map you wish to pass along with the data
  *
  * @author Afshin Mehrabani <afshin dot meh at gmail dot com>
  * 
@@ -57,7 +66,7 @@ function ConvertJsonToTable(parsedJson, tableId, tableClassName, linkText)
     var classMarkup = tableClassName ? ' class="' + tableClassName + '"' :
                                        '';
 
-    var tbl = '<table border="1" cellpadding="1" cellspacing="1"' + idMarkup + classMarkup + '>{0}{1}</table>';
+    var tbl = '<table ' + idMarkup + classMarkup + '>{0}{1}</table>';
 
     //Patterns for table content
     var th = '<thead>{0}</thead>';
@@ -85,8 +94,20 @@ function ConvertJsonToTable(parsedJson, tableId, tableClassName, linkText)
             {
                 headers = array_keys(parsedJson[0]);
 
-                for (i = 0; i < headers.length; i++)
-                    thCon += thRow.format(headers[i]);
+                for (i = 0; i < headers.length; i++){
+			var headerData = parsedJson[0][headers[i]];
+			if (typeof(headerData) == 'object' && headerData.dataType == 'rawData' && headerData.data){
+				//check if we have any cell properties to set
+				if (headerData.properties){
+					thRow = "<th style="+ add_style(headerData.properties) +">{0}</th>";
+				} else {
+					thRow = '<th>{0}</th>';
+				}
+                    		thCon += thRow.format(headerData.data);
+			} else {
+                    		thCon += thRow.format(parsedJson[0][headers[i]]);
+			}
+		}
             }
         }
         th = th.format(tr.format(thCon));
@@ -108,7 +129,7 @@ function ConvertJsonToTable(parsedJson, tableId, tableClassName, linkText)
                 var urlRegExp = new RegExp(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig);
                 var javascriptRegExp = new RegExp(/(^javascript:[\s\S]*;$)/ig);
                 
-                for (i = 0; i < parsedJson.length; i++)
+                for (i = 1; i < parsedJson.length; i++)
                 {
                     for (j = 0; j < headers.length; j++)
                     {
@@ -121,8 +142,18 @@ function ConvertJsonToTable(parsedJson, tableId, tableClassName, linkText)
                         {
                             if(value){
                             	if(typeof(value) == 'object'){
-                            		//for supporting nested tables
-                            		tbCon += tdRow.format(ConvertJsonToTable(eval(value.data), value.tableId, value.tableClassName, value.linkText));
+                                        if( value.dataType == 'subTable' || value.tableId ){
+						//for supporting nested tables
+                            			tbCon += tdRow.format(ConvertJsonToTable(eval(value.data), value.tableId, value.tableClassName, value.linkText));
+					} else if (value.dataType == 'rawData'){
+					        //check if we have any cell properties to set
+						if (value.properties){
+							tdRow = "<td style="+ add_style(value.properties) +">{0}</td>";
+						} else {
+							tdRow = '<td>{0}</td>';
+						}
+						tbCon += tdRow.format(value.data);
+					}
                             	} else {
                             		tbCon += tdRow.format(value);
                             	}
@@ -185,4 +216,15 @@ function array_keys(input, search_value, argStrict)
         }
     }
     return tmp_arr;
+}
+
+/* Return stingified "style" properties */
+function add_style(element)
+{
+	var properties = array_keys(element);
+	var style = '';
+	for (p = 0; p < properties.length; p++) {
+		style = properties[p] + ":" + element[properties[p]] + ";";
+	}
+	return style;
 }
