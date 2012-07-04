@@ -105,7 +105,7 @@ function ConvertJsonToTable(parsedJson, tableId, tableClassName, linkText)
 				}
                     		thCon += thRow.format(headerData.data);
 			} else {
-                    		thCon += thRow.format(parsedJson[0][headers[i]]);
+                    		thCon += thRow.format(headers[i]);
 			}
 		}
             }
