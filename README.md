@@ -5,15 +5,18 @@ This is a simple script to convert JSON data to standard HTML table in the simpl
 
 ##How to use?
 There's only one function in this library and accept four parameter that only the first one is required.
-
+    
+```javascript
     function ConvertJsonToTable(parsedJson, tableId, tableClassName, linkText)
-
+```
+    
 Simply call `ConvertJsonToTable` method and fill the `parsedJson` parameter.  
 
 ##Example
 
 This is an example of using this library:  
 
+```javascript
     //Example data, Object 
     var objectArray = [{
         "Total": "34",
@@ -43,8 +46,12 @@ This is an example of using this library:
             }]
         }
     }];
-    
+```
+
 Code sample to create a HTML table from JSON:
-    
+
+```javascript
     //Only first parameter is required
     var jsonHtmlTable = ConvertJsonToTable(objectArray, 'jsonTable', null, 'Download');
+```
+
