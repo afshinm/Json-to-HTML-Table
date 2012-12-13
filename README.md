@@ -55,3 +55,18 @@ Code sample to create a HTML table from JSON:
     var jsonHtmlTable = ConvertJsonToTable(objectArray, 'jsonTable', null, 'Download');
 ```
 
+Code sample explaned:
+ - First parameter is JSON data
+ - table HTML id attribute will be 'jsonTable'
+ - table HTML class attribute will not be added
+ - 'Download' text will be displayed instead of the link itself
+
+##Contributors
+[Afshin Mehrabani](https://github.com/afshinm) (@afshinmeh)  
+[Sgissinger](https://github.com/sgissinger) 
+
+##Contributing
+
+This is a open-source project. Fork the project, complete the code and send pull request.
+
+
