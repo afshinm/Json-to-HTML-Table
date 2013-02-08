@@ -1,6 +1,5 @@
 /**
  * JavaScript format string function
- * 
  */
 String.prototype.format = function()
 {
@@ -13,6 +12,40 @@ String.prototype.format = function()
   });
 };
 
+// from: https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object/keys
+if (!Object.keys) {
+  Object.keys = (function () {
+    var hasOwnProperty = Object.prototype.hasOwnProperty,
+        hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
+        dontEnums = [
+          'toString',
+          'toLocaleString',
+          'valueOf',
+          'hasOwnProperty',
+          'isPrototypeOf',
+          'propertyIsEnumerable',
+          'constructor'
+        ],
+        dontEnumsLength = dontEnums.length;
+ 
+    return function (obj) {
+      if (typeof obj !== 'object' && typeof obj !== 'function' || obj === null) throw new TypeError('Object.keys called on non-object');
+ 
+      var result = [];
+ 
+      for (var prop in obj) {
+        if (hasOwnProperty.call(obj, prop)) result.push(prop);
+      }
+ 
+      if (hasDontEnumBug) {
+        for (var i=0; i < dontEnumsLength; i++) {
+          if (hasOwnProperty.call(obj, dontEnums[i])) result.push(dontEnums[i]);
+        }
+      }
+      return result;
+    }
+  })()
+};
 
 /**
  * Convert a Javascript Oject array or String array to an HTML table
@@ -83,7 +116,7 @@ function ConvertJsonToTable(parsedJson, tableId, tableClassName, linkText)
             // If JSON data is an object array, headers are automatically computed
             if(typeof(parsedJson[0]) == 'object')
             {
-                headers = array_keys(parsedJson[0]);
+                headers = Object.keys(parsedJson[0]);
 
                 for (i = 0; i < headers.length; i++)
                     thCon += thRow.format(headers[i]);
@@ -143,46 +176,4 @@ function ConvertJsonToTable(parsedJson, tableId, tableClassName, linkText)
         return tbl;
     }
     return null;
-}
-
-
-/**
- * Return just the keys from the input array, optionally only for the specified search_value
- * version: 1109.2015
- *  discuss at: http://phpjs.org/functions/array_keys
- *  +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
- *  +      input by: Brett Zamir (http://brett-zamir.me)
- *  +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
- *  +   improved by: jd
- *  +   improved by: Brett Zamir (http://brett-zamir.me)
- *  +   input by: P
- *  +   bugfixed by: Brett Zamir (http://brett-zamir.me)
- *  *     example 1: array_keys( {firstname: 'Kevin', surname: 'van Zonneveld'} );
- *  *     returns 1: {0: 'firstname', 1: 'surname'}
- */
-function array_keys(input, search_value, argStrict)
-{
-    var search = typeof search_value !== 'undefined', tmp_arr = [], strict = !!argStrict, include = true, key = '';
-
-    if (input && typeof input === 'object' && input.change_key_case) { // Duck-type check for our own array()-created PHPJS_Array
-        return input.keys(search_value, argStrict);
-    }
- 
-    for (key in input)
-    {
-        if (input.hasOwnProperty(key))
-        {
-            include = true;
-            if (search)
-            {
-                if (strict && input[key] !== search_value)
-                    include = false;
-                else if (input[key] != search_value)
-                    include = false;
-            } 
-            if (include)
-                tmp_arr[tmp_arr.length] = key;
-        }
-    }
-    return tmp_arr;
 }
