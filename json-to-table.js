@@ -40,7 +40,7 @@ String.prototype.format = function()
  * @param tableId string Optional table id 
  * @param tableClassName string Optional table css class name
  * @param linkText string Optional text replacement for link pattern
- * 
+ *  
  * @return string Converted JSON to HTML table
  */
 function ConvertJsonToTable(parsedJson, tableId, tableClassName, linkText)
