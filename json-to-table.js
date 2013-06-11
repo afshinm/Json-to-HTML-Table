@@ -36,6 +36,8 @@ String.prototype.format = function()
  *
  * @author Afshin Mehrabani <afshin dot meh at gmail dot com>
  * 
+ * @class ConvertJsonToTable
+ * 
  * @param parsedJson object Parsed JSON data
  * @param tableId string Optional table id 
  * @param tableClassName string Optional table css class name
