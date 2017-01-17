@@ -1,3 +1,5 @@
+## Annoucement: We are working to develop and release a full-featured Javascript table library. Links will be added to this repo soon.
+
 JSON to HTML Table
 ==================
 
