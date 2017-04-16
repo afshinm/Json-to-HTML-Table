@@ -5,7 +5,7 @@ JSON to HTML Table
 
 This is a simple script to convert JSON data to standard HTML table in the simplest and fastest way.
 
-##How to use
+## How to use
 There's only one function in this library and accept four parameter that only the first one is required.
     
 ```javascript
@@ -14,7 +14,7 @@ There's only one function in this library and accept four parameter that only th
     
 Simply call `ConvertJsonToTable` method and fill the `parsedJson` parameter.  
 
-##Example
+## Example
 
 This is an example of using this library:  
 
@@ -63,15 +63,15 @@ Code sample explaned:
  - table HTML class attribute will not be added
  - **Download** text will be displayed instead of the link itself
 
-##Contributors
+## Contributors
 [Afshin Mehrabani](https://github.com/afshinm) (@afshinmeh)  
 [Sgissinger](https://github.com/sgissinger) 
 
-##Contributing
+## Contributing
 
 This is a open-source project. Fork the project, complete the code and send pull request.
 
-##License
+## License
 
     Copyright (C) 2012 Afshin Mehrabani (afshin.meh@gmail.com)
     
