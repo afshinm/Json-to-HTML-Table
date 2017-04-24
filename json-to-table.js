@@ -89,7 +89,7 @@ function ConvertJsonToTable(parsedJson, tableId, tableClassName, linkText)
             {
                 headers = array_keys(parsedJson[0]);
 
-                for (i = 0; i < headers.length; i++)
+                for (var i = 0; i < headers.length; i++)
                     thCon += thRow.format(headers[i]);
             }
         }
@@ -98,7 +98,7 @@ function ConvertJsonToTable(parsedJson, tableId, tableClassName, linkText)
         // Create table rows from Json data
         if(isStringArray)
         {
-            for (i = 0; i < parsedJson.length; i++)
+            for (var i = 0; i < parsedJson.length; i++)
             {
                 tbCon += tdRow.format(parsedJson[i]);
                 trCon += tr.format(tbCon);
@@ -112,9 +112,9 @@ function ConvertJsonToTable(parsedJson, tableId, tableClassName, linkText)
                 var urlRegExp = new RegExp(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig);
                 var javascriptRegExp = new RegExp(/(^javascript:[\s\S]*;$)/ig);
                 
-                for (i = 0; i < parsedJson.length; i++)
+                for (var i = 0; i < parsedJson.length; i++)
                 {
-                    for (j = 0; j < headers.length; j++)
+                    for (var j = 0; j < headers.length; j++)
                     {
                         var value = parsedJson[i][headers[j]];
                         var isUrl = urlRegExp.test(value) || javascriptRegExp.test(value);
