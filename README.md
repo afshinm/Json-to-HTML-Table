@@ -1,4 +1,4 @@
-## Annoucement: We are working to develop and release a full-featured Javascript table library. Links will be added to this repo soon.
+## Annoucement: We have developed a full-featured table library that supports JSON input as well. Please use [Grid.js](https://gridjs.io) instead.
 
 JSON to HTML Table
 ==================
